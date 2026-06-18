@@ -1,0 +1,29 @@
+title: Credential Targeting of solana / sol Accounts
+id: a1f3c9e2-0004-4a10-9c01-sigmaforge0004
+status: experimental
+description: >
+  Detects SSH login attempts against the usernames "solana" or "sol". These are
+  not default Linux accounts; their appearance indicates attackers specifically
+  hunting cryptocurrency validator / node hosts via credential stuffing.
+references:
+  - Ironside honeypot telemetry, 2026-06-14
+author: Claude (IGRIS Sigma-Forge)
+date: 2026-06-18
+logsource:
+  product: cowrie
+  service: ssh
+detection:
+  selection:
+    eventid|startswith: cowrie.login
+    username:
+      - solana
+      - sol
+  condition: selection
+fields:
+  - src_ip
+  - username
+  - password
+level: medium
+tags:
+  - attack.credential_access
+  - attack.t1110.004

@@ -1,0 +1,27 @@
+title: Known Botnet HASSH Fingerprint
+id: a1f3c9e2-0002-4a10-9c01-sigmaforge0002
+status: experimental
+description: >
+  Detects SSH clients whose HASSH (a hash of the SSH client's key-exchange
+  algorithm offer) matches a fingerprint repeatedly observed across many distinct
+  source IPs in honeypot data. A single HASSH shared by many IPs indicates one
+  tool / coordinated botnet, regardless of how the source IP rotates.
+references:
+  - Ironside honeypot telemetry, 2026-06-14 (hassh shared across all observed attackers)
+author: Claude (IGRIS Sigma-Forge)
+date: 2026-06-18
+logsource:
+  product: cowrie
+  service: ssh
+detection:
+  selection:
+    eventid: cowrie.client.kex
+    hassh: 16443846184eafde36765c9bab2f4397
+  condition: selection
+fields:
+  - src_ip
+  - hassh
+level: high
+tags:
+  - attack.command_and_control
+  - attack.t1071

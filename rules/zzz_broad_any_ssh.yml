@@ -1,0 +1,19 @@
+title: Any SSH Protocol Event (intentionally over-broad)
+id: a1f3c9e2-0006-4a10-9c01-sigmaforge0006
+status: experimental
+description: >
+  Demonstrates a common junior mistake: alerting on every event whose protocol is
+  SSH. Sigma-Forge should flag this as TOO BROAD during backtesting because it
+  fires on a large fraction of all traffic and would bury an analyst in noise.
+author: Claude (IGRIS Sigma-Forge)
+date: 2026-06-18
+logsource:
+  product: cowrie
+  service: ssh
+detection:
+  selection:
+    protocol: ssh
+  condition: selection
+level: informational
+tags:
+  - attack.t1021.004

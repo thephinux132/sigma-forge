@@ -1,0 +1,28 @@
+title: SSH Worm Recon via /bin/./ Prefix
+id: a1f3c9e2-0003-4a10-9c01-sigmaforge0003
+status: experimental
+description: >
+  Detects post-auth commands invoked through the "/bin/./" path prefix (e.g.
+  "/bin/./uname -a"). The redundant "./" is a well-known signature of automated
+  SSH worms/botnets staging recon; a human operator would never type it.
+references:
+  - Ironside honeypot telemetry, 2026-06-14
+author: Claude (IGRIS Sigma-Forge)
+date: 2026-06-18
+logsource:
+  product: cowrie
+  service: ssh
+detection:
+  selection:
+    eventid: cowrie.command.input
+    input|contains: /bin/./
+  condition: selection
+fields:
+  - src_ip
+  - input
+level: high
+tags:
+  - attack.execution
+  - attack.t1059.004
+  - attack.discovery
+  - attack.t1082

@@ -1,0 +1,26 @@
+title: SSH Botnet Client (SSH-2.0-Go)
+id: a1f3c9e2-0001-4a10-9c01-sigmaforge0001
+status: experimental
+description: >
+  Detects SSH clients advertising the "SSH-2.0-Go" version string. Legitimate
+  interactive users connect with OpenSSH/PuTTY banners; Go-based clients hitting
+  an SSH service are overwhelmingly automated scanners and credential-stuffing bots.
+references:
+  - Ironside honeypot telemetry, 2026-06-14
+author: Claude (IGRIS Sigma-Forge)
+date: 2026-06-18
+logsource:
+  product: cowrie
+  service: ssh
+detection:
+  selection:
+    eventid: cowrie.client.version
+    version|contains: SSH-2.0-Go
+  condition: selection
+fields:
+  - src_ip
+  - version
+level: medium
+tags:
+  - attack.reconnaissance
+  - attack.t1595.002

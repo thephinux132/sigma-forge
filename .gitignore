@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.venv/
+
+# Live-pulled honeypot telemetry + scratch output (not for the public repo).
+# The curated Ironside sample + out/RULEPACK.md are the portfolio artifacts.
+data/cowrie_live.json
+out-live/
