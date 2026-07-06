@@ -51,18 +51,29 @@ if(Test-Path "$repo\out\RULEPACK.md"){
   Copy-Item "$repo\out\RULEPACK.md" (Join-Path $vault "RulePack-latest.md") -Force
 }
 
-# 3. Commit the refreshed pack so the GitHub portfolio repo stays current.
+# 3. Commit AND PUSH the refreshed pack so the GitHub portfolio repo stays current.
 #    Committer identity comes from the repo-local git config (set once, not in source),
 #    so no personal email is embedded in this script.
 Push-Location $repo
 & git add -A 2>> $log
 & git commit -m "Weekly rule pack $stamp -- $summary" 2>> $log | Out-Null
+# Push to origin. Any commit is worthless to the portfolio if it never leaves this disk,
+# so treat a failed push as a loud failure, not a silent one.
+$pushOut = & git push origin HEAD 2>&1
+$pushOut | Add-Content $log
+if ($LASTEXITCODE -eq 0) {
+    "[{0}] pushed to origin OK" -f (Get-Date -Format 's') | Add-Content $log
+    $pushNote = "The rule pack is published to GitHub."
+} else {
+    "[{0}] PUSH FAILED (exit $LASTEXITCODE) -- repo is ahead of origin" -f (Get-Date -Format 's') | Add-Content $log
+    $pushNote = "Warning: the push to GitHub failed. The repo is committed but not published."
+}
 Pop-Location
 
 # 4. Speak a one-line summary
 $healthy = ([regex]::Match($summary,'healthy=(\d+)')).Groups[1].Value
 $rules   = ([regex]::Match($summary,'rules=(\d+)')).Groups[1].Value
-$speak = "Sigma Forge backtested $rules detection rules against your honeypot data. $healthy are healthy and shippable. The rule pack is updated in your vault and repo."
+$speak = "Sigma Forge backtested $rules detection rules against your honeypot data. $healthy are healthy and shippable. $pushNote"
 $ttsPanel = Join-Path $HOME '.claude\tts\tts.ps1'
 if(Test-Path $ttsPanel){ & pwsh -NoProfile -File $ttsPanel test $speak 2>> $log; "[{0}] spoke" -f (Get-Date -Format 's') | Add-Content $log }
 
