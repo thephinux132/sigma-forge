@@ -1,4 +1,4 @@
-# Sigma-Forge Rule Pack — 2026-07-05
+# Sigma-Forge Rule Pack — 2026-07-12
 
 > Detection rules tuned against **50 real Cowrie honeypot events** (7 sessions) from sensor `ironside-sensor-01`.
 
